@@ -1,0 +1,199 @@
+% Gemini theme
+% https://github.com/anishathalye/gemini
+
+\documentclass[final]{beamer}
+
+% ====================
+% Packages
+% ====================
+
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[size=custom,width=120,height=72,scale=1.0]{beamerposter}
+\usetheme{gemini}
+\usecolortheme{mit}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage[hyperref=true,doi=false,url=false,giveninits=true,backend=biber,sorting=nyt,maxnames=2]{biblatex}
+\addbibresource{bibliography.bib}
+% ====================
+% Lengths
+% ====================
+
+% If you have N columns, choose \sepwidth and \colwidth such that
+% (N+1)*\sepwidth + N*\colwidth = \paperwidth
+\newlength{\sepwidth}
+\newlength{\colwidth}
+\setlength{\sepwidth}{0.025\paperwidth}
+\setlength{\colwidth}{0.3\paperwidth}
+
+\newcommand{\separatorcolumn}{\begin{column}{\sepwidth}\end{column}}
+
+% ====================
+% Title
+% ====================
+
+\title{Parameter Identifiability in Ordinary Differential Equations}
+
+\author{Ilia Ilmer\inst{1}}
+
+\institute[shortinst]{\inst{1} Graduate Center CUNY}
+
+% ====================
+% Footer (optional)
+% ====================
+
+\footercontent{
+  \href{https://iliailmer.github.com}{https://iliailmer.github.com} \hfill
+  JuliaCon 2021, Online \hfill
+  \href{mailto:iilmer@gradcenter.cuny.edu}{iilmer@gradcenter.cuny.edu}}
+% (can be left out to remove footer)
+
+% ====================
+% Logo (optional)
+% ====================
+
+% use this to include logos on the left and/or right side of the header:
+% \logoright{\includegraphics[height=7cm]{logo.png}}
+% \logoleft{\includegraphics[height=7cm]{julia.png}}
+
+% ====================
+% Body
+% ====================
+
+\begin{document}
+
+\begin{frame}[t]
+  \begin{columns}[t]
+    \separatorcolumn
+
+    \begin{column}{\colwidth}
+
+      \begin{block}{Introduction}
+
+        In modeling real-world phenomena, a system of ordinary differential equations is a ubiquitous tool. The quality of such model for a practitioner matters strongly and can be improved by ensuring identifiability of parameters in the ODE system.
+
+        In the following, we will use the ODE system in the form as below
+        \begin{equation}
+          \Sigma := \begin{cases}
+            \mathbf{x}' = \mathbf{f}(\mathbf{x}, \boldsymbol{\mu}, \mathbf{u}), \\
+            \mathbf{y} = \mathbf{g}(\mathbf{x}, \boldsymbol{\mu}, \mathbf{u}),  \\
+            \mathbf{x}(0) = \mathbf{x}^{\ast}
+          \end{cases}
+          \label{ode}
+        \end{equation}
+        where \(\mathbf{x}=(x_1,\dots, x_n)\) is a time-dependent state vector-function (variable) with initial condition \(\mathbf{x}^{\ast}\), \(\mathbf{y}=(y_1,\dots, y_n)\) is a vector-function of model outputs. The vector \(\boldsymbol{\mu}=(\mu_1,\dots,\mu_{\lambda})\) represents the parameters of the system and \(\mathbf{u}=(u_1,\dots,u_s)\) is a vector of input variables.
+        The functions \(\mathbf{f}=(f_1,\dots,f_n)\) and \(\mathbf{g}=(g_1,\dots,g_n)\) where
+        \(f_i=f_i(\mathbf{x}, \boldsymbol{\mu}, \mathbf{u}),~g_i=g_i(\mathbf{x}, \boldsymbol{\mu}, \mathbf{u})\)
+        are assumed to be rational functions of \(\mathbb{C}\).
+      \end{block}
+
+      \begin{block}{What is structural identifiaibility?}
+        Structural identifiability is a theoretical property that helps one assess whether a parameter or the whole system are identifiable. That is, whether, given experimental data, one is able to obtain the parameter quantity from the measurements.
+        Note that this property does not tell us how to obtain such value and is only \emph{theoretical}. It can be further split into two categories:
+        \begin{itemize}
+          \item \emph{local structural identifiability}: a parameter can be identified up to finitely many values,
+          \item \emph{global structural identifiability}: a parameter can be identified uniquely.
+        \end{itemize}
+        Here we imply a generic experiment when talking about identifiability properties. For a given system, one can create an example with a trivial solution (zero initial conditions, zero inputs, zero parameters) and nothing will be identifiable.
+      \end{block}
+
+      \begin{block}{Examples}
+        Let us consider some examples of identifiability problems for ODE systems.
+        \begin{example}[1]
+          \begin{equation}
+            \begin{cases}
+              x'=Ax, \\
+              y=x,~x(0)=x_0.
+            \end{cases}
+            \label{example1}
+          \end{equation}
+          We are interested in identifiability of parameters \(A\) and \(x_0\). Clearly, the solution to \ref{example1} is \(x=x_0e^{At}\). Therefore, we know \(y=x_0e^{At}\), hence we can globally identify \[x_0=y(0)\]
+          from the output function \(y\). To answer about \(A\), consider that we uniquely know \(y'=Ay,\)
+          therefore \[A=\frac{y'(0)}{y(0)}.\]
+        \end{example}
+
+        \begin{example}[2]
+          \begin{equation}
+            \begin{cases}
+              x'=\theta^2, \\
+              y=x,~x(0)=x_0.
+            \end{cases}
+            \label{example2}
+          \end{equation}
+          Here, the solution is \(x=\theta^2t\) and we can identify \(x_0=y(0)\) as before. Note that \(y(1)=\theta^2\), however, this implies \(\theta=\pm \sqrt{y(1)}\), hence identifiable locally.
+        \end{example}
+      \end{block}
+
+    \end{column}
+
+    \separatorcolumn
+
+    \begin{column}{\colwidth}
+      \begin{example}[3]
+        \begin{equation}
+          \begin{cases}
+            x'=0, \\
+            y_1=x, y_2=ax+b,~x(0)=x_0.
+          \end{cases}
+          \label{example3}
+        \end{equation}
+        This is an example where the initial condition is identifiable from \(y_1=x\). Note that for \(a,~b\) parameters we cannot find values since the system of algebraic equations is underdetermined: \[y_2=ay_1+b.\]
+      \end{example}
+      \begin{block}{Existing Algorithms}
+        There is a variety solutions to identifiability problems that can be separated into groups by the underlying methods. Some of the solutions deal with local and global identifiability, others seek answer to finding identifiable combinations or functions of parameters.
+        \begin{enumerate}
+          \item \textbf{Series Based:} an example of a program that relies on series solution is GenSSI \cite{chics2011genssi}.
+          \item \textbf{Differential Algebraic approaches:} DAISY \cite{saccomani2008daisy,saccomani2019new}, COMBOS \cite{meshkat2014finding,kalami2020combos2}, SIAN\cite{hong2019sian,hong2020global}.
+          \item \textbf{Other Approaches:} StrikeGOLDD \cite{villaverde2016strikegoldd}.
+        \end{enumerate}
+
+      \end{block}
+
+      \begin{block}{Local Identifiability: Sedoglavic's Algorithm}
+        An example of a differential-algebraic approach to local identifiability problem is an algorith developed by Alexandre Sedoglavic in 2002 \cite{sedoglavic2002probabilistic}. The underlying idea of the algorithm is straightforward: we check the rank of the Jacobian of the output functions \(Y\) with respect to states and parameters and conclude the identifiability based on the rank value (see \cite[Corollary 2.1]{sedoglavic2002probabilistic}).
+
+        It can be expensive to compute everything directly, so instead the following numerical probabilistic procedure is used:
+        \begin{enumerate}
+          \item Create random (integer) power series for input functions, parameters, and initial conditions, initialize a max degree \(\nu\) and starting degree \(d=1\),
+          \item Find power series solution up to degree \(d\) to the numerators of the original ODE system,
+          \item Construct a power series solution to the variational system (definition here is omitted)
+          \item Set \(d:=2d\). Steps 2, 3 are repeated until the order of power series is at most \(\nu\).
+          \item Calculate the Jacobian of outputs with respect to new power series solution, calculate rank.
+        \end{enumerate}
+
+      \end{block}
+
+      \begin{block}{Global Identifiability: SIAN}
+
+      \end{block}
+
+    \end{column}
+
+    \separatorcolumn
+
+    \begin{column}{\colwidth}
+
+      \begin{block}{Julia-Based Solutions}
+
+        \heading{A heading inside a block}
+
+        \heading{Another heading inside a block}
+
+      \end{block}
+
+      \begin{block}{Work-in-Progress}
+
+      \end{block}
+
+      \begin{block}{References}
+        \printbibliography{}
+      \end{block}
+    \end{column}
+    \separatorcolumn{}
+  \end{columns}
+\end{frame}
+
+\end{document}
