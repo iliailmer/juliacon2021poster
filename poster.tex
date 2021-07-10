@@ -152,7 +152,7 @@
 
       \end{block}
 
-      \begin{block}{Local Identifiability: Sedoglavic's Algorithm}
+      \begin{block}{Local Identifiability: Sedoglavic's Algorithm \cite{sedoglavic2002probabilistic}}
         An example of a differential-algebraic approach to local identifiability problem is an algorith developed by Alexandre Sedoglavic in 2002 \cite{sedoglavic2002probabilistic}. The underlying idea of the algorithm is straightforward: we check the rank of the Jacobian of the output functions \(Y\) with respect to states and parameters and conclude the identifiability based on the rank value (see \cite[Corollary 2.1]{sedoglavic2002probabilistic}).
 
         It can be expensive to compute everything directly, so instead the following numerical probabilistic procedure is used:
@@ -166,8 +166,17 @@
 
       \end{block}
 
-      \begin{block}{Global Identifiability: SIAN}
+      \begin{block}{Global Identifiability: SIAN \cite{hong2019sian}}
+        SIAN, or Structural Identifiability Analyzer, is an algorithm developed in 2019 and implemented in {\sc Maple} \cite{sian_github} and, more recently, in Julia \cite{sian_julia_github}. This algorithm allows one to query both local and global identifiability properties of individual parameters.
 
+        Simply put, the input ODE system is converted to a system of polynomials:
+        \begin{enumerate}
+          \item The Taylor series' terms are computed up to an internally determined order,
+          \item The system of polynomials obtained from these terms is truncated,
+          \item The truncated system is specialized to random values of parameters and inputs,
+          \item For the resulting ideal, we compute Gr\"obner basis to report the globally identifiable parameters.
+        \end{enumerate}
+        This algorithm lays at the base of our recently published web-application~\cite{ilmer2021web}.
       \end{block}
 
     \end{column}
@@ -176,16 +185,14 @@
 
     \begin{column}{\colwidth}
 
-      \begin{block}{Julia-Based Solutions}
-
-        \heading{A heading inside a block}
-
-        \heading{Another heading inside a block}
-
-      \end{block}
-
       \begin{block}{Work-in-Progress}
+        During this iteration of Summer of Code, I am working on adding a solution to identifiability problem to SciML ecosystem.
 
+        The solution will be included as a package {\tt StructuralIdentifiability.jl}, for which manuscript is currently in preparation~\cite{structidjl}.
+
+        This package includes ability not only to assess local and global structural identifiability of individual parameters, but also allows to assess whether this is a single- or mutli-experiment identifiable parameter. The latter type of identifiability would mitigate the issue of example presented in equation~\ref{example3}.
+
+        The working process involves carefully assessing test cases of each module of the package, addressing compatibility issues between various symbolic processing packages in Julia, such as {\tt Nemo} \cite{nemo} and {\tt ModelingToolkit.jl} \cite{ma2021modelingtoolkit}.
       \end{block}
 
       \begin{block}{References}
